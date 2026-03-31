@@ -8,11 +8,21 @@
 <style>
 body{
   margin:0;
-  font-family:-apple-system,"PingFang SC","Noto Sans SC","Hiragino Sans GB",sans-serif;
-  background:linear-gradient(135deg,#fdf6f0,#fde2e4);
+  font-family:-apple-system,"PingFang SC","Noto Sans SC",sans-serif;
+
+  background:linear-gradient(270deg,#fdf6f0,#fde2e4,#fce1ec);
+  background-size:400% 400%;
+  animation:bgMove 12s ease infinite;
 }
 
-/* 🌸 背景光晕（修复点击问题） */
+/* 🌸 背景动画 */
+@keyframes bgMove{
+  0%{ background-position:0% 50%;}
+  50%{ background-position:100% 50%;}
+  100%{ background-position:0% 50%;}
+}
+
+/* 光晕 */
 body::before{
   content:"";
   position:fixed;
@@ -21,17 +31,25 @@ body::before{
   background:radial-gradient(circle,#ffd6e0,transparent);
   top:20%;
   left:10%;
-  filter:blur(60px);
-  pointer-events:none; /* ✅关键修复 */
+  filter:blur(80px);
+  pointer-events:none;
+  animation:lightMove 18s ease-in-out infinite;
+}
+
+@keyframes lightMove{
+  0%{ transform:translate(0,0);}
+  50%{ transform:translate(40px,30px);}
+  100%{ transform:translate(0,0);}
 }
 
 /* 居中 */
 .container{
-  height:100vh;
+  min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
   flex-direction:column;
+  padding:20px;
 }
 
 /* 首页 */
@@ -44,11 +62,11 @@ body::before{
 
 /* 按钮 */
 button{
-  touch-action:manipulation; /* ✅移动端优化 */
+  touch-action:manipulation;
 }
 
 .start-btn{
-  padding:18px 40px;
+  padding:16px 36px;
   font-size:20px;
   border:none;
   border-radius:30px;
@@ -66,11 +84,15 @@ button{
 }
 .btn:active{ transform:scale(0.95); }
 
-/* 卡片 */
+/* 🟦 卡片（重点修复） */
 .card{
-  width:85%;
-  max-width:380px;
-  height:420px;
+  width:100%;
+  max-width:360px;
+
+  /* ❗核心：不写死高度 */
+  min-height:180px;
+  max-height:60vh;
+
   background:#fff;
   border-radius:28px;
   box-shadow:0 10px 30px rgba(0,0,0,0.1);
@@ -79,20 +101,21 @@ button{
   align-items:center;
   justify-content:center;
   text-align:center;
-  padding:30px;
 
-  font-size:22px;
+  padding:30px 24px;
+
+  font-size:20px;
   line-height:1.6;
-  letter-spacing:0.3px;
 
   transition:0.35s;
 
-  animation:float 3s ease-in-out infinite;
+  animation:float 4s ease-in-out infinite;
 }
 
+/* 呼吸 */
 @keyframes float{
   0%{ transform:translateY(0);}
-  50%{ transform:translateY(-6px);}
+  50%{ transform:translateY(-4px);}
   100%{ transform:translateY(0);}
 }
 
@@ -108,7 +131,7 @@ button{
 
 /* 控制区 */
 .controls{
-  margin-top:20px;
+  margin-top:24px;
   display:flex;
   align-items:center;
   gap:12px;
@@ -143,12 +166,10 @@ button{
 
 <body>
 
-<!-- 首页 -->
 <div class="home" id="home">
   <button class="start-btn" onclick="start()">开始互动</button>
 </div>
 
-<!-- 游戏 -->
 <div class="container hidden" id="game">
   <div class="card" id="card">
     <div id="question">点击开始</div>
@@ -160,7 +181,6 @@ button{
   </div>
 </div>
 
-<!-- 狗头 -->
 <img src="dog.png" id="dog" class="dog hidden"/>
 
 <script>
@@ -274,7 +294,6 @@ const questions = [
 "你会不会愿意慢慢多见几次？",
 ];
 
-/* 🐶 */
 function start(){
   const dog = document.getElementById("dog");
   dog.classList.remove("hidden");
@@ -287,7 +306,6 @@ function start(){
   },600);
 }
 
-/* 💗 */
 function showHearts(){
   const container = document.getElementById("controls");
 
@@ -304,7 +322,6 @@ function showHearts(){
   }
 }
 
-/* 取题 */
 function getQuestion(){
   if(currentIndex === 0) return firstQuestion;
 
