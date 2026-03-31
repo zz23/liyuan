@@ -4,22 +4,32 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>互动卡片</title>
+
 <style>
 body{
   margin:0;
   font-family:-apple-system,BlinkMacSystemFont;
   background:linear-gradient(135deg,#fdf6f0,#fde2e4);
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
+}
+
+/* 居中 */
+.container{
   height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
 }
 
+/* 首页 */
 .home{
-  text-align:center;
+  height:100vh;
+  display:flex;
+  justify-content:center;
+  align-items:center;
 }
 
+/* 按钮 */
 .start-btn{
   padding:18px 40px;
   font-size:20px;
@@ -29,19 +39,7 @@ body{
   color:#fff;
 }
 
-.top{
-  position:fixed;
-  top:20px;
-  left:20px;
-}
-
-.back{
-  padding:8px 16px;
-  border:none;
-  border-radius:20px;
-  background:#fff;
-}
-
+/* 卡片 */
 .card{
   width:85%;
   max-width:380px;
@@ -49,24 +47,66 @@ body{
   background:#fff;
   border-radius:20px;
   box-shadow:0 10px 30px rgba(0,0,0,0.1);
+
   display:flex;
   align-items:center;
   justify-content:center;
+
   text-align:center;
   padding:20px;
   font-size:22px;
-  overflow:hidden;
-  flex-shrink:0;
+  line-height:1.5;
+
+  transition:0.35s;
+}
+
+/* 翻页 */
+.slide-out{
+  transform:translateX(120%);
+  opacity:0;
+}
+.slide-in{
+  transform:translateX(-120%);
+  opacity:0;
+}
+
+/* 控制区 */
+.controls{
+  margin-top:20px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  position:relative;
 }
 
 .btn{
-  margin-top:20px;
   padding:14px 30px;
   border:none;
   border-radius:25px;
   background:linear-gradient(135deg,#ff8fab,#6d7cff);
   color:#fff;
+}
+
+/* 🐶 */
+.dog{
+  position:fixed;
+  width:80px;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+}
+
+/* 💗 爱心 */
+.heart{
+  position:absolute;
   font-size:16px;
+  color:#ff6b9d;
+  animation:heart 0.8s ease forwards;
+}
+
+@keyframes heart{
+  0%{ transform:translate(0,0) scale(1); opacity:1;}
+  100%{ transform:translate(var(--x), var(--y)) scale(0.5); opacity:0;}
 }
 
 .hidden{display:none}
@@ -75,27 +115,30 @@ body{
 
 <body>
 
-<div class="top hidden" id="top">
-  <button class="back" onclick="goHome()">返回</button>
-</div>
-
+<!-- 首页 -->
 <div class="home" id="home">
   <button class="start-btn" onclick="start()">开始互动</button>
 </div>
 
-<div id="game" class="hidden">
+<!-- 游戏 -->
+<div class="container hidden" id="game">
   <div class="card" id="card">点击开始</div>
-  <div style="display:flex;align-items:center;gap:12px;margin-top:20px;">
-  <span id="counter">1 / 100</span>
-  <button class="btn" onclick="next()">回答 / 下一题</button>
+
+  <div class="controls" id="controls">
+    <span id="counter">1 / 100</span>
+    <button class="btn" onclick="next()">回答 / 下一题</button>
+  </div>
 </div>
-</div>
+
+<!-- 狗头 -->
+<img src="dog.png" id="dog" class="dog hidden"/>
 
 <script>
 
-let currentIndex=0;
-const total=100;
-const questions=[
+let currentIndex = 0;
+const total = 100;
+
+const questions = [
 "你平时最放松的那一刻通常是在什么情况下？",
 "你更享受‘完全属于自己的一段时间’还是‘和熟人待在一起’？",
 "你觉得一个人待着舒服，是天生的还是慢慢形成的？",
@@ -199,37 +242,68 @@ const questions=[
 ];
 
 function start(){
-  document.getElementById("home").classList.add("hidden");
-  document.getElementById("game").classList.remove("hidden");
-  document.getElementById("top").classList.remove("hidden");
-  next();
+  const dog = document.getElementById("dog");
+  dog.classList.remove("hidden");
+
+  setTimeout(()=>{
+    dog.classList.add("hidden");
+    document.getElementById("home").classList.add("hidden");
+    document.getElementById("game").classList.remove("hidden");
+    next();
+  },600);
 }
 
-// 初始化时确保只显示首页
-window.onload = function(){
-  document.getElementById("home").classList.remove("hidden");
-  document.getElementById("game").classList.add("hidden");
-  document.getElementById("top").classList.add("hidden");
-}
+/* 💗 爱心效果 */
+function showHearts(){
+  const container = document.getElementById("controls");
 
-function goHome(){
-  document.getElementById("home").classList.remove("hidden");
-  document.getElementById("game").classList.add("hidden");
-  document.getElementById("top").classList.add("hidden");
+  for(let i=0;i<6;i++){
+    const heart = document.createElement("div");
+    heart.className = "heart";
+    heart.innerText = "💗";
+
+    const x = (Math.random()*80 - 40) + "px";
+    const y = (Math.random()*-80 - 20) + "px";
+
+    heart.style.setProperty("--x", x);
+    heart.style.setProperty("--y", y);
+
+    container.appendChild(heart);
+
+    setTimeout(()=> heart.remove(), 800);
+  }
 }
 
 function next(){
-  if(currentIndex>=total){
-    goHome();
-    currentIndex=0;
+
+  if(currentIndex >= total){
+    location.reload();
     return;
   }
 
-  const q=questions[Math.floor(Math.random()*questions.length)];
-  document.getElementById("card").innerText=q;
+  showHearts(); // 💗
+
+  const card = document.getElementById("card");
+
+  card.classList.add("slide-out");
+
+  setTimeout(()=>{
+    const q = questions[Math.floor(Math.random()*questions.length)];
+    card.innerText = q;
+
+    card.classList.remove("slide-out");
+    card.classList.add("slide-in");
+
+    requestAnimationFrame(()=>{
+      requestAnimationFrame(()=>{
+        card.classList.remove("slide-in");
+      });
+    });
+
+  },300);
 
   currentIndex++;
-  document.getElementById("counter").innerText=currentIndex + " / " + total;
+  document.getElementById("counter").innerText = currentIndex + " / " + total;
 }
 
 </script>
