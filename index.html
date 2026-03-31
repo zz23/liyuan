@@ -8,8 +8,21 @@
 <style>
 body{
   margin:0;
-  font-family:-apple-system,BlinkMacSystemFont;
+  font-family:-apple-system,"PingFang SC","Noto Sans SC","Hiragino Sans GB",sans-serif;
   background:linear-gradient(135deg,#fdf6f0,#fde2e4);
+  overflow:hidden;
+}
+
+/* 背景光晕 */
+body::before{
+  content:"";
+  position:fixed;
+  width:300px;
+  height:300px;
+  background:radial-gradient(circle,#ffd6e0,transparent);
+  top:20%;
+  left:10%;
+  filter:blur(60px);
 }
 
 /* 居中 */
@@ -37,7 +50,19 @@ body{
   border-radius:30px;
   background:linear-gradient(135deg,#ff8fab,#6d7cff);
   color:#fff;
+  font-weight:500;
 }
+.start-btn:active{ transform:scale(0.95); }
+
+.btn{
+  padding:14px 30px;
+  border:none;
+  border-radius:25px;
+  background:linear-gradient(135deg,#ff8fab,#6d7cff);
+  color:#fff;
+  font-weight:500;
+}
+.btn:active{ transform:scale(0.95); }
 
 /* 卡片 */
 .card{
@@ -45,19 +70,29 @@ body{
   max-width:380px;
   height:420px;
   background:#fff;
-  border-radius:20px;
+  border-radius:28px;
   box-shadow:0 10px 30px rgba(0,0,0,0.1);
 
   display:flex;
   align-items:center;
   justify-content:center;
-
   text-align:center;
-  padding:20px;
+  padding:30px;
+
   font-size:22px;
-  line-height:1.5;
+  line-height:1.6;
+  font-weight:400;
+  letter-spacing:0.3px;
 
   transition:0.35s;
+
+  animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+  0%{ transform:translateY(0);}
+  50%{ transform:translateY(-6px);}
+  100%{ transform:translateY(0);}
 }
 
 /* 翻页 */
@@ -79,23 +114,6 @@ body{
   position:relative;
 }
 
-.btn{
-  padding:14px 30px;
-  border:none;
-  border-radius:25px;
-  background:linear-gradient(135deg,#ff8fab,#6d7cff);
-  color:#fff;
-}
-
-/* 🐶 */
-.dog{
-  position:fixed;
-  width:80px;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-}
-
 /* 💗 爱心 */
 .heart{
   position:absolute;
@@ -109,20 +127,29 @@ body{
   100%{ transform:translate(var(--x), var(--y)) scale(0.5); opacity:0;}
 }
 
+/* 🐶 */
+.dog{
+  position:fixed;
+  width:90px;
+  left:50%;
+  top:50%;
+  transform:translate(-50%,-50%);
+}
+
 .hidden{display:none}
 </style>
 </head>
 
 <body>
 
-<!-- 首页 -->
 <div class="home" id="home">
   <button class="start-btn" onclick="start()">开始互动</button>
 </div>
 
-<!-- 游戏 -->
 <div class="container hidden" id="game">
-  <div class="card" id="card">点击开始</div>
+  <div class="card" id="card">
+    <div id="question">点击开始</div>
+  </div>
 
   <div class="controls" id="controls">
     <span id="counter">1 / 100</span>
@@ -130,13 +157,15 @@ body{
   </div>
 </div>
 
-<!-- 狗头 -->
 <img src="dog.png" id="dog" class="dog hidden"/>
 
 <script>
 
 let currentIndex = 0;
 const total = 100;
+let used = [];
+
+const firstQuestion = "你最近有没有一刻，是觉得“这样其实挺舒服的”？";
 
 const questions = [
 "你平时最放松的那一刻通常是在什么情况下？",
@@ -253,7 +282,6 @@ function start(){
   },600);
 }
 
-/* 💗 爱心效果 */
 function showHearts(){
   const container = document.getElementById("controls");
 
@@ -262,34 +290,46 @@ function showHearts(){
     heart.className = "heart";
     heart.innerText = "💗";
 
-    const x = (Math.random()*80 - 40) + "px";
-    const y = (Math.random()*-80 - 20) + "px";
-
-    heart.style.setProperty("--x", x);
-    heart.style.setProperty("--y", y);
+    heart.style.setProperty("--x",(Math.random()*80-40)+"px");
+    heart.style.setProperty("--y",(Math.random()*-80-20)+"px");
 
     container.appendChild(heart);
-
-    setTimeout(()=> heart.remove(), 800);
+    setTimeout(()=>heart.remove(),800);
   }
+}
+
+function getQuestion(){
+  if(currentIndex === 0) return firstQuestion;
+
+  let available = questions.filter(q=>!used.includes(q));
+  if(available.length===0) used=[];
+
+  const q = available[Math.floor(Math.random()*available.length)];
+  used.push(q);
+  return q;
 }
 
 function next(){
 
   if(currentIndex >= total){
-    location.reload();
+    document.getElementById("question").innerText = "今天先到这里～下次继续 😄";
     return;
   }
 
-  showHearts(); // 💗
+  showHearts();
 
   const card = document.getElementById("card");
+  const qEl = document.getElementById("question");
 
   card.classList.add("slide-out");
 
   setTimeout(()=>{
-    const q = questions[Math.floor(Math.random()*questions.length)];
-    card.innerText = q;
+    qEl.style.opacity = 0;
+
+    const q = getQuestion();
+    qEl.innerText = q;
+
+    setTimeout(()=>{ qEl.style.opacity = 1; },50);
 
     card.classList.remove("slide-out");
     card.classList.add("slide-in");
