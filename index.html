@@ -10,10 +10,9 @@ body{
   margin:0;
   font-family:-apple-system,"PingFang SC","Noto Sans SC","Hiragino Sans GB",sans-serif;
   background:linear-gradient(135deg,#fdf6f0,#fde2e4);
-  overflow:hidden;
 }
 
-/* 背景光晕 */
+/* 🌸 背景光晕（修复点击问题） */
 body::before{
   content:"";
   position:fixed;
@@ -23,6 +22,7 @@ body::before{
   top:20%;
   left:10%;
   filter:blur(60px);
+  pointer-events:none; /* ✅关键修复 */
 }
 
 /* 居中 */
@@ -43,6 +43,10 @@ body::before{
 }
 
 /* 按钮 */
+button{
+  touch-action:manipulation; /* ✅移动端优化 */
+}
+
 .start-btn{
   padding:18px 40px;
   font-size:20px;
@@ -50,7 +54,6 @@ body::before{
   border-radius:30px;
   background:linear-gradient(135deg,#ff8fab,#6d7cff);
   color:#fff;
-  font-weight:500;
 }
 .start-btn:active{ transform:scale(0.95); }
 
@@ -60,7 +63,6 @@ body::before{
   border-radius:25px;
   background:linear-gradient(135deg,#ff8fab,#6d7cff);
   color:#fff;
-  font-weight:500;
 }
 .btn:active{ transform:scale(0.95); }
 
@@ -81,7 +83,6 @@ body::before{
 
   font-size:22px;
   line-height:1.6;
-  font-weight:400;
   letter-spacing:0.3px;
 
   transition:0.35s;
@@ -142,10 +143,12 @@ body::before{
 
 <body>
 
+<!-- 首页 -->
 <div class="home" id="home">
   <button class="start-btn" onclick="start()">开始互动</button>
 </div>
 
+<!-- 游戏 -->
 <div class="container hidden" id="game">
   <div class="card" id="card">
     <div id="question">点击开始</div>
@@ -157,6 +160,7 @@ body::before{
   </div>
 </div>
 
+<!-- 狗头 -->
 <img src="dog.png" id="dog" class="dog hidden"/>
 
 <script>
@@ -270,6 +274,7 @@ const questions = [
 "你会不会愿意慢慢多见几次？",
 ];
 
+/* 🐶 */
 function start(){
   const dog = document.getElementById("dog");
   dog.classList.remove("hidden");
@@ -282,6 +287,7 @@ function start(){
   },600);
 }
 
+/* 💗 */
 function showHearts(){
   const container = document.getElementById("controls");
 
@@ -298,6 +304,7 @@ function showHearts(){
   }
 }
 
+/* 取题 */
 function getQuestion(){
   if(currentIndex === 0) return firstQuestion;
 
