@@ -1,80 +1,42 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>互动卡片</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>小园的使用说明</title>
 
 <style>
-
-/* 🌸 默认（正式模式） */
 body{
   margin:0;
-  font-family:-apple-system,"PingFang SC","Noto Sans SC",sans-serif;
-
-  background:linear-gradient(270deg,#fdf6f0,#fde2e4,#fce1ec);
-  background-size:400% 400%;
-  animation:bgMove 12s ease infinite;
+  font-family:-apple-system,"PingFang SC",sans-serif;
+  overflow:hidden;
+  transition:0.4s;
 }
 
-/* 🎲 随机模式 */
+/* 🌸 背景 */
+body.normal{
+  background:linear-gradient(270deg,#fffafa,#fdecec,#fff0f3);
+  background-size:400% 400%;
+  animation:bgMove 18s ease infinite;
+}
 body.random{
-  background:linear-gradient(270deg,#ffe4ec,#e0c3fc,#fbc2eb);
+  background:linear-gradient(270deg,#f3e8ff,#e9d5ff,#f5f3ff);
   background-size:400% 400%;
-  animation:bgMove 8s ease infinite;
+  animation:bgMove 18s ease infinite;
 }
-
-/* 🧪 测试模式 */
 body.test{
-  background:linear-gradient(270deg,#f5f5f5,#e0e0e0,#f0f0f0);
+  background:linear-gradient(270deg,#f5f5f5,#e5e5e5,#f0f0f0);
   background-size:400% 400%;
-  animation:bgMove 14s ease infinite;
+  animation:bgMove 18s ease infinite;
 }
 
 @keyframes bgMove{
-  0%{ background-position:0% 50%;}
-  50%{ background-position:100% 50%;}
-  100%{ background-position:0% 50%;}
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
 }
 
-/* 光晕（随模式变化） */
-body::before{
-  content:"";
-  position:fixed;
-  width:300px;
-  height:300px;
-  background:radial-gradient(circle,#ffd6e0,transparent);
-  top:20%;
-  left:10%;
-  filter:blur(80px);
-  pointer-events:none;
-  animation:lightMove 18s ease-in-out infinite;
-}
-
-body.random::before{
-  background:radial-gradient(circle,#e0bbff,transparent);
-}
-
-body.test::before{
-  background:radial-gradient(circle,#cccccc,transparent);
-}
-
-@keyframes lightMove{
-  0%{ transform:translate(0,0);}
-  50%{ transform:translate(40px,30px);}
-  100%{ transform:translate(0,0);}
-}
-
-/* 布局 */
-.container{
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  flex-direction:column;
-  padding:20px;
-}
-
+/* 首页 */
 .home{
   height:100vh;
   display:flex;
@@ -82,141 +44,188 @@ body.test::before{
   align-items:center;
 }
 
-/* 按钮 */
-button{ touch-action:manipulation; }
-
-.start-btn{
-  padding:16px 36px;
-  font-size:18px;
-  border:none;
-  border-radius:30px;
-  background:linear-gradient(135deg,#ff8fab,#6d7cff);
-  color:#fff;
+.manual{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  gap:26px;
 }
-.start-btn:active{ transform:scale(0.95); }
 
-.test-btn{
-  padding:10px 22px;
-  font-size:14px;
-  border:none;
-  border-radius:20px;
-  background:rgba(0,0,0,0.1);
-  color:#555;
+.title{
+  font-size:26px;
+  letter-spacing:4px;
+  color:#444;
+}
+
+.subtitle{
+  font-size:12px;
+  color:#aaa;
+}
+
+.avatar{
+  width:140px;
+}
+
+.menu{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+
+.menu-btn{
+  width:200px;
+  padding:14px;
+  text-align:center;
+  border-radius:999px;
+  backdrop-filter:blur(12px);
+  border:1px solid rgba(255,180,200,0.3);
+  background:rgba(255,255,255,0.35);
+  transition:0.25s;
+}
+
+.menu-btn.main{color:#ff6b9d;font-size:20px;}
+.menu-btn.sub{color:#b388ff;font-size:18px;}
+.menu-btn.test{color:#999;font-size:16px;}
+
+.menu-btn:active{transform:scale(0.92);}
+
+/* 第二页 */
+.container{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  background:inherit;
+
+  transform:translateY(20px);
+  opacity:0;
+  pointer-events:none;
+  transition:0.4s;
+}
+
+.container.show{
+  transform:translateY(0);
+  opacity:1;
+  pointer-events:auto;
 }
 
 /* 卡片 */
 .card{
-  width:100%;
-  max-width:360px;
+  width:85%;
+  max-width:380px;
   min-height:180px;
-  max-height:60vh;
-
-  background:#fff;
+  background:rgba(255,255,255,0.5);
+  backdrop-filter:blur(18px);
   border-radius:28px;
-  box-shadow:0 10px 30px rgba(0,0,0,0.1);
-
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  padding:28px;
   text-align:center;
-
-  padding:28px 22px;
   font-size:20px;
-  line-height:1.6;
-
-  transition:0.35s;
-  animation:float 4s ease-in-out infinite;
 }
 
-@keyframes float{
-  0%{ transform:translateY(0);}
-  50%{ transform:translateY(-4px);}
-  100%{ transform:translateY(0);}
-}
-
-/* 翻页 */
-.slide-out{
-  transform:translateX(120%);
-  opacity:0;
-}
-.slide-in{
-  transform:translateX(-120%);
-  opacity:0;
-}
-
-/* 控制区 */
+/* 控制 */
 .controls{
   margin-top:24px;
   display:flex;
   align-items:center;
   gap:12px;
-  position:relative;
 }
 
-.btn{
+.action-btn{
   padding:14px 28px;
   border:none;
-  border-radius:25px;
-  background:linear-gradient(135deg,#ff8fab,#6d7cff);
+  border-radius:30px;
   color:#fff;
+  position:relative;
+  overflow:hidden;
 }
 
-/* 💗 */
+body.normal .action-btn{
+  background:linear-gradient(135deg,#ff8fab,#ff6b9d);
+}
+body.random .action-btn{
+  background:linear-gradient(135deg,#a18cd1,#d8b4fe);
+}
+body.test .action-btn{
+  background:linear-gradient(135deg,#bbb,#888);
+}
+
+.action-btn:active{
+  transform:scale(0.92);
+}
+
+/* 返回 */
+.back-btn{
+  position:fixed;
+  top:20px;
+  left:16px;
+  width:36px;
+  height:36px;
+  border-radius:50%;
+  background:rgba(0,0,0,0.2);
+  color:#fff;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* 爱心 */
 .heart{
   position:absolute;
-  font-size:16px;
-  color:#ff6b9d;
-  animation:heart 0.8s ease forwards;
+  font-size:14px;
+  pointer-events:none;
+  animation:heartMove 0.8s ease forwards;
 }
 
-@keyframes heart{
-  0%{ transform:translate(0,0) scale(1); opacity:1;}
-  100%{ transform:translate(var(--x), var(--y)) scale(0.5); opacity:0;}
+@keyframes heartMove{
+  0%{transform:translate(0,0) scale(0.8);opacity:1;}
+  100%{transform:translate(var(--x),var(--y)) scale(0.6);opacity:0;}
 }
-
-/* 🐶 */
-.dog{
-  position:fixed;
-  width:90px;
-  left:50%;
-  top:50%;
-  transform:translate(-50%,-50%);
-}
-
-.hidden{display:none}
 </style>
 </head>
 
-<body>
+<body class="normal">
 
+<!-- 首页 -->
 <div class="home" id="home">
-  <div style="display:flex;flex-direction:column;gap:16px;align-items:center;">
-    <button class="start-btn" onclick="start('normal')">开始互动</button>
-    <button class="start-btn" onclick="start('random')" style="opacity:0.85;">🎲 随机模式</button>
-    <button class="test-btn" onclick="start('test')">🧪 测试</button>
+  <div class="manual">
+    <div class="title">小园的使用说明</div>
+    <div class="subtitle">在慢慢了解之前，请先温柔阅读</div>
+    <img src="avatar.png" class="avatar"/>
+
+    <div class="menu">
+      <div class="menu-btn main" onclick="start('normal')">基础说明</div>
+      <div class="menu-btn sub" onclick="start('random')">随机说明</div>
+      <div class="menu-btn test" onclick="start('test')">测试说明</div>
+    </div>
   </div>
 </div>
 
-<div class="container hidden" id="game">
-  <div class="card" id="card">
-    <div id="question">点击开始</div>
-  </div>
+<!-- 第二页 -->
+<div class="container" id="game">
 
-  <div class="controls" id="controls">
+  <div class="back-btn" onclick="back()">✕</div>
+
+  <div class="card" id="question">点击开始</div>
+
+  <div class="controls">
     <span id="counter">1 / 100</span>
-    <button class="btn" onclick="next()">回答 / 下一题</button>
+    <button class="action-btn" onclick="next()">回答 / 下一题</button>
   </div>
-</div>
 
-<img src="dog.png" id="dog" class="dog hidden"/>
+</div>
 
 <script>
+let index=0;
+let mode="normal";
 
-let currentIndex = 0;
-let mode = "normal";
-
-const questions = [
-  "最近有没有一件小事，让你突然觉得挺舒服的？",
+/* 主题库 */
+const questions=[
+"最近有没有一件小事，让你突然觉得挺舒服的？",
 "下班以后，通常最想先进入哪种状态？",
 "有时候安静下来，你会更容易想清楚事情吗？",
 "说到真正放松的时候，脑子里一般会先冒出什么画面？",
@@ -315,7 +324,9 @@ const questions = [
 "如果“像自己”这件事有一个答案，你觉得它更接近什么状态？",
 "未来一段时间，你最想让自己多一点什么？"
 ];
-const testQuestions = [
+
+/* 测试题库 */
+const testQuestions=[
 "你平时最放松的那一刻通常是在什么情况下？",
 "你更享受‘完全属于自己的一段时间’还是‘和熟人待在一起’？",
 "你觉得一个人待着舒服，是天生的还是慢慢形成的？",
@@ -376,86 +387,66 @@ const testQuestions = [
 "你有没有意识到自己和以前不一样了？",
 "你觉得自己现在更接近真实状态了吗？",
 "你会不会有时候想把外界声音关掉？",
-"你觉得影响你最大的东西是什么？",];
+"你觉得影响你最大的东西是什么？",
+];
 
 function start(m){
+  mode=m;
+  index=0;
+  document.body.className=m;
 
-  mode = m;
-  currentIndex = 0;
-
-  /* 🎯 切换背景主题 */
-  document.body.classList.remove("random","test");
-
-  if(mode === "random") document.body.classList.add("random");
-  if(mode === "test") document.body.classList.add("test");
-
-  const dog = document.getElementById("dog");
-  dog.classList.remove("hidden");
+  document.getElementById("home").style.opacity="0";
 
   setTimeout(()=>{
-    dog.classList.add("hidden");
-    document.getElementById("home").classList.add("hidden");
-    document.getElementById("game").classList.remove("hidden");
+    document.getElementById("home").style.display="none";
+    document.getElementById("game").classList.add("show");
     next();
-  },600);
+  },200);
 }
 
-function showHearts(){
-  const container = document.getElementById("controls");
-
-  for(let i=0;i<6;i++){
-    const heart = document.createElement("div");
-    heart.className = "heart";
-    heart.innerText = "💗";
-
-    heart.style.setProperty("--x",(Math.random()*80-40)+"px");
-    heart.style.setProperty("--y",(Math.random()*-80-20)+"px");
-
-    container.appendChild(heart);
-    setTimeout(()=>heart.remove(),800);
-  }
+function back(){
+  document.getElementById("game").classList.remove("show");
+  document.getElementById("home").style.display="flex";
+  setTimeout(()=>{
+    document.getElementById("home").style.opacity="1";
+  },50);
 }
 
 function getQuestion(){
-
-  if(mode === "random"){
+  if(mode==="random"){
     return questions[Math.floor(Math.random()*questions.length)];
   }
-
-  if(mode === "test"){
-    return testQuestions[currentIndex] || "测试结束";
+  if(mode==="test"){
+    return testQuestions[index % testQuestions.length];
   }
+  return questions[index % questions.length];
+}
 
-  return questions[currentIndex] || "今天先到这里～";
+function hearts(){
+  const btn=document.querySelector(".action-btn");
+  for(let i=0;i<5;i++){
+    const h=document.createElement("div");
+    h.className="heart";
+    h.innerText="💗";
+    h.style.setProperty("--x",(Math.random()*60-30)+"px");
+    h.style.setProperty("--y",(Math.random()*-60-10)+"px");
+    btn.appendChild(h);
+    setTimeout(()=>h.remove(),800);
+  }
 }
 
 function next(){
+  hearts();
 
-  showHearts();
+  document.getElementById("question").innerText=getQuestion();
 
-  const card = document.getElementById("card");
-  const qEl = document.getElementById("question");
-
-  card.classList.add("slide-out");
-
-  setTimeout(()=>{
-    qEl.innerText = getQuestion();
-
-    card.classList.remove("slide-out");
-    card.classList.add("slide-in");
-
-    requestAnimationFrame(()=>{
-      requestAnimationFrame(()=>{
-        card.classList.remove("slide-in");
-      });
-    });
-
-  },300);
-
-  currentIndex++;
-  document.getElementById("counter").innerText = currentIndex + " / 100";
+  if(mode!=="random"){
+    index++;
+    document.getElementById("counter").innerText=index+" / 100";
+  }else{
+    document.getElementById("counter").innerText="随机";
+  }
 }
-
 </script>
 
 </body>
