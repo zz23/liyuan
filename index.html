@@ -58,9 +58,16 @@ body.test{
   color:#333;
 }
 
-.subtitle{
-  font-size:12px;
+
+.line1{
+  font-size:15px;
+  color:#666;
+}
+.line2{
+  font-size:9px;
   color:#aaa;
+  margin-top:4px;
+  letter-spacing:1px;
 }
 
 .avatar{
@@ -193,7 +200,8 @@ body.test .action-btn{
 <div class="home" id="home">
   <div class="manual">
     <div class="title">小园的使用说明</div>
-    <div class="subtitle">第 1 版：正在了解小园 - 仅供学霸使用</div>
+    <div class="line1">- 第3版：正在了解小园 -<br>  </div>
+	<div class="line2">- 开发中版本 -</div>
     <img src="avatar.png" class="avatar"/>
 
     <div class="menu">
@@ -213,7 +221,7 @@ body.test .action-btn{
 
   <div class="controls">
     <span id="counter">1 / 100</span>
-    <button class="action-btn" onclick="next()">回答 / 下一题</button>
+    <button class="action-btn" onclick="next()">采集完毕</button>
   </div>
 
 </div>
